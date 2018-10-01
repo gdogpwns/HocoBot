@@ -14,30 +14,31 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 def main():
-    i = 0
-    def tweet_loop(i):
-        tweet = ("@edgyontheledgy will you go to homecoming with @gdogpwns? Reply the word YES to make me stop! This is tweet #" + str(i) + ".")
-        i += 1
-        api.update_status(tweet)
+    i = 1
+    def sleep_func():
         sleep(600)
+        mention_loop()
+    def tweet_loop(i):
+        tweet = ("@edgyontheledgy will you go to homecoming with @gdogpwns? Reply the word YES to make me stop! This is tweet #" + str(i))
+        api.update_status(tweet)
+        i += 1
+
     def mention_loop():
+        tweet_loop(i)
         mentions_list = api.mentions_timeline()
         try:
             status = mentions_list[0]
             json_str = json.dumps(status._json)
         except:
-            sleep(10)
-            mention_loop()
+            sleep_func()
         text = json.loads(json_str)['text']
         print(text)
         if text == ("@MeganAtHoco YES"):
             tweet = "HOORAY! I CAN GO BACK INTO MY ETERNAL SLUMBER NOW. REALITY IS A SIMULATION. LIFE IS A LIE."
             api.update_status(tweet)
             exit()
-        sleep(60)
-        mention_loop()
-    mention_loop()
+        sleep_func()
     tweet_loop(i)
-
+    mention_loop()
 
 main()
